@@ -18,18 +18,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from users.views import UserRegistrationView
 from core.views import api_overview
+from django.http import HttpResponseRedirect
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 
+     # Redirect root URL to /api/
+    path("", lambda request: HttpResponseRedirect('/api/')),
+    path('api/register/', UserRegistrationView.as_view(), name='register'),  # Add this line for registration
     # API Overview
-    path('api/', api_overview),
+    path('api/overview/', api_overview),
 
     # Users and products API
     path('api/users/', include('users.urls')), 
     path('api/products/', include('products.urls')),
-    
+
+    # transaction API
+    path('api/transactions/', include('transaction.urls')),
+
     # JWT Authentication
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
